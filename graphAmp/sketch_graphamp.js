@@ -3,6 +3,8 @@ let song;
 
 let amp;
 let fft;
+let ftt_bins;
+let freq_width;
 let peakLow;
 let peakMid;
 let peakHigh;
@@ -21,13 +23,18 @@ let onsetLowHistory = [];
 
 
 function setup() {
-	createCanvas(600, 300)
+	createCanvas(600, 300);
+	colorMode(HSB);
 
 	let song1File = "audio/Digi GAlessio - darix togni.mp3";
 	let song2File = "audio/Monkey Warhol - Lunar Phases.mp3";
 
 	// Load song
 	song = loadSound(song1File, loaded)	
+
+	// Set FTT bins
+	ftt_bins = 64;
+	freq_width = width / ftt_bins;
 }
 
 function loaded(){
@@ -49,7 +56,7 @@ function togglePlaying(){
 		amp = new p5.Amplitude();
 		amp.setInput(song);
 		
-		fft = new p5.FFT();
+		fft = new p5.FFT(0.7, ftt_bins);
 		fft.setInput(song);
 
 		peakLow = new p5.PeakDetect(40,120,threshold=0.5);
@@ -78,10 +85,10 @@ function draw() {
 		song.setVolume(sliderVolume.value());
 
 		let vol = amp.getLevel();
-		let y = map(vol, 0, 1, height, 0);
-		volHistory.push(y);
+		let volMap = map(vol, 0, 1, height, 0);
+		volHistory.push(volMap);
 
-		fft.analyze();
+		let spectrum = fft.analyze();
 
 		peakLow.update(fft);
 		if (peakLow.isDetected) {
@@ -121,30 +128,30 @@ function draw() {
 		// }
 
 		push();
-		stroke(255);
+		
 		beginShape();
 		noFill();
 		translate(0, -height/2)
 		for(var i = 0; i < volHistory.length; i++) {
 
-			stroke(255, 255, 255);
+			stroke(0, 0, 255);
 			vertex(i, volHistory[i]);
 			//console.log(i, y)
 
 			if(peakLowHistory[i] == 1) {
-				stroke(255, 0, 0);
+				stroke(10, 255, 255);
 				line(i, 0, i, height)
 			}
 
-			if(peakMidHistory[i] == 1) {
-				stroke(0, 255, 0);
-				line(i, 0, i, height)
-			}
+			// if(peakMidHistory[i] == 1) {
+			// 	stroke(0, 255, 0);
+			// 	line(i, 0, i, height)
+			// }
 
-			if(peakHighHistory[i] == 1) {
-				stroke(100, 100, 255);
-				line(i, 0, i, height)
-			}
+			// if(peakHighHistory[i] == 1) {
+			// 	stroke(100, 100, 255);
+			// 	line(i, 0, i, height)
+			// }
 
 			// if(beatLowHistory[i] == 1) {
 			// 	stroke(255, 0, 255);
@@ -166,6 +173,15 @@ function draw() {
 			//beatLowHistory.splice(0, 1);
 		}
 		pop();
+
+		for (let i = 0; i < spectrum.length; i++) {
+			let amp = spectrum[i];
+			let y = map(amp, 0, 255, height, height/2);
+			fill(i, 255, 255);
+			//line(i*freq_width, height, i*freq_width, y); 
+			rect(i*freq_width, y, freq_width, height - y);
+			console.log(y);
+		}
 
 		stroke(255, 0, 0);
 		line(volHistory.length, 0, volHistory.length, height)
