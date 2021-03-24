@@ -59,9 +59,9 @@ function togglePlaying(){
 		fft = new p5.FFT(0.7, ftt_bins);
 		fft.setInput(song);
 
-		peakLow = new p5.PeakDetect(40,120,threshold=0.5);
-		peakMid = new p5.PeakDetect(5000,10000,threshold=0.5);
-		peakHigh = new p5.PeakDetect(10000,20000,threshold=0.5);
+		peakLow = new p5.PeakDetect(40,120,threshold=0.7);
+		peakMid = new p5.PeakDetect(5000,10000,threshold=0.7);
+		peakHigh = new p5.PeakDetect(10000,20000,threshold=0.7);
 
 		onsetLow = new OnsetDetect(40,120,"bass",0.025);
    		beatLow = new BeatDetect(40,120,"bass",0.95);
@@ -180,11 +180,16 @@ function draw() {
 			fill(i, 255, 255);
 			//line(i*freq_width, height, i*freq_width, y); 
 			rect(i*freq_width, y, freq_width, height - y);
-			console.log(y);
 		}
 
-		stroke(255, 0, 0);
-		line(volHistory.length, 0, volHistory.length, height)
+		if(peakLowHistory[volHistory.length-1] == 1) {
+			stroke(1, 0, 255);
+			strokeWeight(3);
+		} else {
+			stroke(1, 255, 255);
+			strokeWeight(1);
+		}
+		line(volHistory.length, 0, volHistory.length, height/2);
 	}
 	else{
 		volHistory = [];
