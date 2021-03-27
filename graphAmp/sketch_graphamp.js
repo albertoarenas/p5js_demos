@@ -28,9 +28,11 @@ function setup() {
 
 	let song1File = "audio/Digi GAlessio - darix togni.mp3";
 	let song2File = "audio/Monkey Warhol - Lunar Phases.mp3";
+	let song3File = "audio/rock.mp3"
+	let song4File = "audio/telepatia_short.mp3"
 
 	// Load song
-	song = loadSound(song1File, loaded)	
+	song = loadSound(song3File, loaded)	
 
 	// Set FTT bins
 	ftt_bins = 64;
