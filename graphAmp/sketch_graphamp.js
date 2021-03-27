@@ -32,7 +32,7 @@ function setup() {
 	let song4File = "audio/telepatia_short.mp3";
 
 	// Load song
-	song = loadSound(song4File, loaded);
+	song = loadSound(song3File, loaded);
 
 	// Set FTT bins
 	ftt_bins = 64;
